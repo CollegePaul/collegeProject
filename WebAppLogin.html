@@ -1,0 +1,134 @@
+<!-- Version 9-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" 
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+      
+
+    function GetRecords()
+    {
+      var spin = "<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>";
+      spin += " Getting your data ...";
+      document.getElementById("LoginButton").innerHTML = spin;
+      //var username = document.getElementById("username").value;
+      //var password = document.getElementById("password").value;
+      
+      //this script will run code.gs check login function and returns output
+      google.script.run.withSuccessHandler(function(output) 
+      {
+        console.log(output); //test
+        var username = output[1];
+        var id = output[1];
+        //displayName = '<h3>' + username + '</h3';
+        console.log("Email:" + id);
+        if(output[0] == 'TRUE')
+        {
+          google.script.run.withSuccessHandler(function(ar) 
+          {
+            console.log(ar);
+            displayName = '<h3>' + ar[0][0] + '</h3';
+            if(ar.length > 0)
+            {
+              var displayTable = '<table class=\"table\" id=\"mainTable\" >';
+              displayTable += "<tr>";
+              //displayTable += "<th>Username</th>";
+              displayTable += "<th>Test</th>";
+              displayTable += "<th>Grade</th>";
+              displayTable += "</tr>";
+
+              ar.forEach(function(item, index) 
+              {
+                displayTable += "<tr>";
+                //displayTable += "<td>"+item[0]+"</td>";
+                displayTable += "<td>"+item[1]+"</td>";
+                displayTable += "<td>"+item[2]+"</td>";
+                displayTable += "</tr>";
+              });
+
+              displayTable += "</table>";
+              if(ar[2][2] == "red"){
+                document.getElementById("badge").innerHTML="<h3>Your Badges</h3><br><img src='https://s4.gifyu.com/images/red499cf5057e21911e.png' width='100' height='100'>";
+              }
+              if(ar[2][2] == "brown"){
+                document.getElementById("badge").innerHTML="<h3>Your Badges</h3><br><img src='https://s4.gifyu.com/images/brown63ed1657cc29bb36.png' width='100' height='100'>";
+              }
+            }
+            else
+            {
+              var displayTable = "<span style=\"font-weight: bold\" >No Records Found</span>";
+            }
+            document.getElementById("displayName").innerHTML = displayName;
+            document.getElementById("displayRecords").innerHTML = displayTable;
+            document.getElementById("LoginButton").innerHTML = "Login";
+            document.getElementById("username").value = '';
+            document.getElementById("password").value = '';
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
+
+            //0 , 2
+        function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Hours per Day'],
+          ['Score',    ar[0][2] ],
+          ['To Do',    100 - ar[0][2]]
+        ]);
+
+        var options = {
+          //backgroundColor: '#222222',
+          chartArea:{width:'90%',height:'90%'},
+          width: 200,
+          height: 200,
+          colors: ['#33FF66', '#333333'],
+          pieHole: 0.4,
+          legend: 'none',
+          pieSliceBorderColor: 'none',
+          pieSliceText: 'none',
+          slices: { 0: {offset: 0.0},
+                    1: {pieSliceText: 'none'}}
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+          }
+          
+          }).GetRecords(username);
+
+          document.getElementById("errorMessage").innerHTML = "";
+          
+        }
+        else if(output[0] == 'FALSE')
+        {
+          document.getElementById("errorMessage").innerHTML = "Failed to Login";
+          document.getElementById("LoginButton").innerHTML = "Login";   
+        }
+
+      }).checkLogin();
+    }
+    </script>
+  </head>
+  <body>
+  <h2>Login Web App Get Records</h2>
+  <div style="padding: 10px;" >
+  
+    <button class="btn btn-primary" type="button" id="LoginButton" onclick="GetRecords()" >
+      Get your data!      
+    </button>
+    <span id="errorMessage" style="color: red" ></span>
+  </div>
+  <hr>
+  <h3>Version 9</h3>
+  <div id="displayName"></div>
+  <div id="displayRecords" style="padding: 10px;" >
+  </div>
+  <!--<img id="badge" style="display:none" src="https://drive.google.com/uc?export=download&id=1DduytJB4pZUNXMXkqi5VjyO1oumxsRcM" width="100" height=100> -->
+  <div id="badge"></div>
+  <div id="piechart" style="width: 200px; height: 200px;"></div>
+  </body>
+</html>
