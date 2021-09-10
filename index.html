@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" 
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  
+    <script>
+      
+      function GetRecords(){
+
+      
+        //---------------
+            //simulated incoming data
+           var output=[]
+           output[1] = 'psmith@nnc.ac.uk'
+           output[0] = 'TRUE'
+
+        //-------------
+        
+        var username = output[1];
+        
+        
+        //if a user is found
+        if(output[0] == 'TRUE')
+        {
+         
+
+
+            //sample JSON data structure - this is how the data is structured
+            // data = {
+            //         "username": "psmith@rnngroup.ac.uk",
+            //         "Unit1": {
+            //           "Headings": [
+            //             "p1",
+            //             "p2",
+            //             "m1"
+            //           ],
+            //           "Grades": [
+            //             "pass",
+            //             "",
+            //             "pass"
+            //           ]
+            //         }
+            //       }
+
+            
+
+            
+            //creating sample data structure (this would be passed to the inner function)
+            //this data is made in the other file, code.gs
+            var data = {}
+            data['username'] = "psmith@rnngroup.ac.uk"
+
+            headings = ["p1","p2", "p3"]
+            grades = ["pass","-", "pass"]
+
+            data['Unit1'] = { "Headings" : headings,
+                              "Grades" : grades}
+
+
+            //the web page part will display the data ----------------------
+              
+              //diplay user name
+              displayName = '<h2>' + data['username'] + '</h2>'
+
+              //display table headings and grades for unit 1
+              //this will be a table,just testing the data
+              //hear we could loop over data an make real table. this is just a demo.
+              displayTable = '<h4>' + data['Unit1']['Headings'] + '</h4> <br> <h4>' + data['Unit1']['Grades'] + '</h4>'
+
+
+            //set the data into the divs -------------------------------------
+            document.getElementById("displayName").innerHTML = displayName;
+            document.getElementById("displayRecords").innerHTML = displayTable;
+            document.getElementById("LoginButton").innerHTML = "Login";
+            
+            
+         
+
+          document.getElementById("errorMessage").innerHTML = "";
+          
+        }
+        else if(output[0] == 'FALSE')
+        {
+          document.getElementById("errorMessage").innerHTML = "Failed to Login";
+          document.getElementById("LoginButton").innerHTML = "Login";   
+        }
+    }
+    </script>
+  </head>
+  <body>
+  <h2>Login Web App Get Records</h2>
+  <div style="padding: 10px;" >
+  <!-- The line below is the button that starts the get records script above) -->
+    <button class="btn btn-primary" type="button" id="LoginButton" onclick="GetRecords()" >
+      Get your data!      
+    </button>
+    <span id="errorMessage" style="color: red" ></span>
+  </div>
+  <hr>
+  <h3>Version 9</h3>
+  <div id="displayName"></div>
+  <div id="displayRecords" style="padding: 10px;" >
+  </div>
+  
+  <!-- not how these are empty divs -- the content will be added to it -->
+  <div id="badge"></div>
+  
+  </body>
+</html>
